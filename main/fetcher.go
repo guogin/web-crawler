@@ -32,7 +32,15 @@ func (f *MyFetcher) Fetch(url string) FetchResult {
 
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		return FetchResult{url, "", nil, fmt.Errorf("http status code: %v", resp.StatusCode)}
+	}
+
 	body, _ := ioutil.ReadAll(resp.Body)
+
+	bodyString := string(body)
+	fmt.Println(bodyString)
+
 	document, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		return FetchResult{url, "", nil, fmt.Errorf("error loading response body: %s", url)}
